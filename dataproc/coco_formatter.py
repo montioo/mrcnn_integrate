@@ -19,10 +19,11 @@ class COCODatasetFormatterConfig(object):
 
     # The path derived from base folder
     @property
-    def image_folder_path(self):
+    def image_folder_path(self) -> str:
         return os.path.join(self.base_folder, 'images')
+
     @property
-    def json_file_path(self):
+    def json_file_path(self) -> str:  # Just the base folder with db name
         assert len(self.db_name) > 0
         assert os.path.exists(self.base_folder)
         return os.path.join(self.base_folder, self.db_name)
@@ -55,7 +56,9 @@ class COCODatasetFormatterConfig(object):
 
 
 class COCODatasetFormatter(object):
-
+    """
+    This formatter borrows a lot form Ethan Weber's code in pytorch-dense-correspondence
+    """
     def __init__(self, config: COCODatasetFormatterConfig):
         # The config file
         self._config = config
@@ -99,14 +102,14 @@ class COCODatasetFormatter(object):
                     category_id = self._category_name2id[category_name]
 
                     # Get annotation info
-                    validity, annotation = self._get_annotation_info(
+                    is_validity, annotation = self._get_annotation_info(
                         annotation_id,
                         image_id,
                         category_id,
                         binary_mask)
 
                     # If this annotation is OK
-                    if validity:
+                    if is_validity:
                         annotation_id += 1
                         img_annotation_list.append(annotation)
 
@@ -162,8 +165,8 @@ class COCODatasetFormatter(object):
         }
 
         # Check the result
-        validity = self._check_annotation_valid(annotation)
-        return validity, annotation
+        is_validity = self._check_annotation_valid(annotation)
+        return is_validity, annotation
 
     @staticmethod
     def _get_encoded_mask(image_mask: np.ndarray):
