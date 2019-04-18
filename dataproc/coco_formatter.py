@@ -5,6 +5,7 @@ import attr
 from pycocotools import mask
 from skimage import measure
 import numpy as np
+import json
 from typing import List, Dict
 import config.parameter as parameter
 from dataproc.abstract_db import AbstractMaskDatabase
@@ -13,20 +14,44 @@ from dataproc.abstract_db import AbstractMaskDatabase
 @attr.s
 class COCODatasetFormatterConfig(object):
     # The various path
-    base_folder = ''
+    db_name: str = ''
+    base_folder: str = ''
 
     # The path derived from base folder
     @property
     def image_folder_path(self):
         return os.path.join(self.base_folder, 'images')
+    @property
+    def json_file_path(self):
+        assert len(self.db_name) > 0
+        assert os.path.exists(self.base_folder)
+        return os.path.join(self.base_folder, self.db_name)
 
-    # The object category
+    # The object category, might be update
     object_category = parameter.default_obj_category
 
     # The default parameter
     BBOX_MIN_WIDTH: float = 5.0
     BBOX_MIN_HEIGHT: float = 5.0
     AREA_THRESHOLD: float = 25.0
+
+    # Misc info
+    INFO = {
+        "description": "Dense Correspondence COCO Dataset",
+        "url": "https://github.com/RobotLocomotion/pytorch-dense-correspondence",
+        "version": "",
+        "year": 2018,
+        "contributor": "",
+        "date_created": datetime.datetime.utcnow().isoformat(' ')
+    }
+
+    LICENSES = [
+        {
+            "id": 1,
+            "name": "",
+            "url": ""
+        }
+    ]
 
 
 class COCODatasetFormatter(object):
@@ -36,6 +61,7 @@ class COCODatasetFormatter(object):
         self._config = config
 
         # Build the path if not exist
+        assert len(self._config.db_name) > 0
         assert len(self._config.base_folder) > 0
         if not os.path.exists(self._config.base_folder):
             os.mkdir(self._config.base_folder)
@@ -105,6 +131,11 @@ class COCODatasetFormatter(object):
                 all_image_info_list.append(image_info)
                 image_id += 1
 
+        # Global output
+        coco_output = self._get_coco_output_from_images_and_annotations(
+            all_image_info_list, all_annotation_list)
+        self._write_coco_to_json(coco_output)
+
     def _get_annotation_info(
             self,
             annotation_id: int,
@@ -126,7 +157,7 @@ class COCODatasetFormatter(object):
             "category_id": category_id,
             "segmentation": segmentation,
             "area": float(area),
-            "bbox": [x, y, width, height],
+            "bbox": [int(x), int(y), int(width), int(height)],
             "iscrowd": 0,  # assume polygon for now
         }
 
@@ -218,6 +249,25 @@ class COCODatasetFormatter(object):
 
         return image_info
 
+    def _get_coco_output_from_images_and_annotations(self, images, annotations):
+        # construct the dictionary that will be used to create the coco json data
+        coco_output = {
+            "info": self._config.INFO,
+            "licenses": self._config.LICENSES,
+            "categories": self._config.object_category,
+            "images": images,
+            "annotations": annotations
+        }
+        return coco_output
+
+    def _write_coco_to_json(self, coco_output):
+        # write the coco data to a json file which was specified at the class instantiation
+        # self.name_of_set should be the string name to write to (which shouldn't include
+        # .json)
+        full_json_filename = self._config.json_file_path
+        with open('{}.json'.format(full_json_filename), 'w') as output_json_file:
+            json.dump(coco_output, output_json_file)
+
 
 # The debugger methods
 def test_formatter():
@@ -230,6 +280,7 @@ def test_formatter():
 
     # The formatter
     formatter_config = COCODatasetFormatterConfig()
+    formatter_config.db_name = 'boot_db'
     formatter_config.base_folder = 'tmp'
     formatter = COCODatasetFormatter(formatter_config)
     formatter.process_db_list([database])
