@@ -1,18 +1,53 @@
 import os
 import cv2
 import datetime
+import attr
 from pycocotools import mask
 from skimage import measure
 import numpy as np
 from typing import List, Dict
+import config.parameter as parameter
 from dataproc.abstract_db import AbstractMaskDatabase
+
+
+@attr.s
+class COCODatasetFormatterConfig(object):
+    # The various path
+    base_folder = ''
+
+    # The path derived from base folder
+    @property
+    def image_folder_path(self):
+        return os.path.join(self.base_folder, 'images')
+
+    # The object category
+    object_category = parameter.default_obj_category
+
+    # The default parameter
+    BBOX_MIN_WIDTH: float = 5.0
+    BBOX_MIN_HEIGHT: float = 5.0
+    AREA_THRESHOLD: float = 25.0
 
 
 class COCODatasetFormatter(object):
 
-    def __init__(self):
+    def __init__(self, config: COCODatasetFormatterConfig):
+        # The config file
+        self._config = config
+
+        # Build the path if not exist
+        assert len(self._config.base_folder) > 0
+        if not os.path.exists(self._config.base_folder):
+            os.mkdir(self._config.base_folder)
+        if not os.path.exists(self._config.image_folder_path):
+            os.mkdir(self._config.image_folder_path)
+
+        # Build name2id
         self._category_name2id: Dict[str, int] = {}
-        pass
+        for category in config.object_category:
+            assert 'name' in category
+            assert 'id' in category
+            self._category_name2id[category['name']] = category['id']
 
     def process_db_list(self, database_list: List[AbstractMaskDatabase]):
         # Predefined variables
@@ -61,7 +96,7 @@ class COCODatasetFormatter(object):
                 height, width, _ = rgb_img.shape  # Must be three channel image
 
                 # Write the image to output path
-                rgb_output_path = os.path.join(COCODataFormatter.images_path, "{:05}.png".format(image_id))
+                rgb_output_path = os.path.join(self._config.image_folder_path, "{:05}.png".format(image_id))
                 rgb_relative_path = os.path.basename(rgb_output_path)
                 cv2.imwrite(rgb_output_path, rgb_img)
 
@@ -123,7 +158,6 @@ class COCODatasetFormatter(object):
             tolerance: Maximum distance from original points of polygon to approximated
                 polygonal chain. If tolerance is 0, the original coordinate array is returned.
         """
-
         polygons = []
         # pad mask to close contours of shapes which start and end at an edge
         padded_binary_mask = np.pad(image_mask, pad_width=1, mode='constant', constant_values=0)
@@ -141,27 +175,21 @@ class COCODatasetFormatter(object):
             segmentation = [0 if i < 0 else i for i in segmentation]
             polygons.append(segmentation)
 
+        # OK
         return polygons
 
     def _check_annotation_valid(self, ann) -> bool:
-        """
-        Checks whether the annotation is valid
-        :param annotation:
-        :type annotation:
-        :return:
-        :rtype:
-        """
-
         if len(ann['segmentation']) == 0:
             return False
 
-        if ann['area'] < COCODataFormatter.AREA_THRESHOLD:
+        if ann['area'] < self._config.AREA_THRESHOLD:
             return False
 
         [x, y, width, height] = ann['bbox']
-        if (width < COCODataFormatter.BBOX_MIN_WIDTH) or (height < COCODataFormatter.BBOX_MIN_HEIGHT):
+        if (width < self._config.BBOX_MIN_WIDTH) or (height < self._config.BBOX_MIN_HEIGHT):
             return False
 
+        # Everything is OK here
         return True
 
     @staticmethod
@@ -189,3 +217,23 @@ class COCODatasetFormatter(object):
         }
 
         return image_info
+
+
+# The debugger methods
+def test_formatter():
+    import dataproc.spartan_singleobj_database as spartan_db
+    config = spartan_db.SpartanSingleObjMaskDatabaseConfig()
+    config.pdc_data_root = '/home/wei/data/pdc'
+    config.scene_list_filepath = '/home/wei/Coding/fill_it/config/boot_logs.txt'
+    config.category_name_key = 'shoe'
+    database = spartan_db.SpartanSingleObjMaskDatabase(config)
+
+    # The formatter
+    formatter_config = COCODatasetFormatterConfig()
+    formatter_config.base_folder = 'tmp'
+    formatter = COCODatasetFormatter(formatter_config)
+    formatter.process_db_list([database])
+
+
+if __name__ == '__main__':
+    test_formatter()
