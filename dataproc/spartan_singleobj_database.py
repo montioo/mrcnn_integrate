@@ -90,7 +90,7 @@ class SpartanSingleObjMaskDatabase(AbstractMaskDatabase):
         annotation.bbox_bottomright = image_path_entry.bbox_bottom_right
 
         # Append to result and return
-        result.annotation_list.append(annotation)
+        result.annotation_list = [annotation]
         return result
 
     @staticmethod
@@ -208,6 +208,7 @@ def path_entry_sanity_check(entry):
 
 
 def test_spartan_singleobj_database():
+    import utils.imgproc as imgproc
     config = SpartanSingleObjMaskDatabaseConfig()
     config.pdc_data_root = '/home/wei/data/pdc'
     config.scene_list_filepath = '/home/wei/Coding/fill_it/config/boot_logs.txt'
@@ -216,6 +217,25 @@ def test_spartan_singleobj_database():
     path_entry_list = database.path_entry_list
     for entry in path_entry_list:
         assert path_entry_sanity_check(entry)
+
+    # Write the image and annotation
+    tmp_dir = 'tmp'
+    if not os.path.exists(tmp_dir):
+        os.makedirs(tmp_dir)
+
+    # Iterate over the dataset
+    for i in range(len(database)):
+        entry = database[i]
+        # Write the rgb image
+        rgb_img = entry.rgb_image
+        rgb_img_path = os.path.join(tmp_dir, 'img_%d_rgb.png' % i)
+        cv2.imwrite(rgb_img_path, rgb_img)
+
+        # The mask image
+        assert len(entry.annotation_list) == 1
+        mask_img = entry.annotation_list[0].binary_mask
+        mask_img_path = os.path.join(tmp_dir, 'img_%d_mask.png' % i)
+        cv2.imwrite(mask_img_path, imgproc.get_visible_mask(mask_img))
 
 
 if __name__ == '__main__':

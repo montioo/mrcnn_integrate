@@ -1,5 +1,6 @@
 import attr
 import numpy as np
+import cv2
 
 
 """ The default pixel coordinate type
@@ -80,3 +81,14 @@ def mask2bbox(mask_img: np.ndarray) -> (PixelCoord, PixelCoord):
     bottom_right.x = right
     bottom_right.y = bottom
     return top_left, bottom_right
+
+
+# Misc functions for visualization
+# All these method SHOULD NOT modify the input
+def get_visible_depth(depth_in):  # type: (np.ndarray) -> np.ndarray
+    max_value = np.max(depth_in)
+    return cv2.convertScaleAbs(src=depth_in, alpha=(255.0 / max_value))
+
+
+def get_visible_mask(binary_mask):  # type: (np.ndarray) -> np.ndarray
+    return get_visible_depth(binary_mask)
