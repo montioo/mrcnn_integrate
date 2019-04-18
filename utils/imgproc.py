@@ -92,3 +92,11 @@ def get_visible_depth(depth_in):  # type: (np.ndarray) -> np.ndarray
 
 def get_visible_mask(binary_mask):  # type: (np.ndarray) -> np.ndarray
     return get_visible_depth(binary_mask)
+
+
+def draw_bounding_box(
+        img_row: int, img_col: int,
+        bbox_topleft: PixelCoord, bbox_bottomright: PixelCoord) -> np.ndarray:
+    mask_img = np.zeros(shape=(img_row, img_col))
+    mask_img[bbox_topleft.y:bbox_bottomright.y, bbox_topleft.x:bbox_bottomright.x] = 1
+    return get_visible_mask(mask_img)

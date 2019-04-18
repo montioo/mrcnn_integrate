@@ -237,6 +237,12 @@ def test_spartan_singleobj_database():
         mask_img_path = os.path.join(tmp_dir, 'img_%d_mask.png' % i)
         cv2.imwrite(mask_img_path, imgproc.get_visible_mask(mask_img))
 
+        # the bounding box
+        bbox_img = imgproc.draw_bounding_box(480, 640,
+                                  entry.annotation_list[0].bbox_topleft, entry.annotation_list[0].bbox_bottomright)
+        bbox_img_path = os.path.join(tmp_dir, 'img_%d_bbox.png' % i)
+        cv2.imwrite(bbox_img_path, bbox_img)
+
 
 if __name__ == '__main__':
     test_spartan_singleobj_database()
