@@ -134,6 +134,10 @@ class COCODatasetFormatter(object):
                 all_image_info_list.append(image_info)
                 image_id += 1
 
+                # Debug output
+                if image_id % 20 == 0:
+                    print('Processing image %d' % image_id)
+
         # Global output
         coco_output = self._get_coco_output_from_images_and_annotations(
             all_image_info_list, all_annotation_list)
