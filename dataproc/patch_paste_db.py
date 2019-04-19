@@ -138,8 +138,8 @@ def test_patch_paste_db():
     from dataproc.spartan_singleobj_database import SpartanSingleObjMaskDatabase, SpartanSingleObjMaskDatabaseConfig
     config = SpartanSingleObjMaskDatabaseConfig()
     config.pdc_data_root = '/home/wei/data/pdc'
-    config.scene_list_filepath = '/home/wei/Coding/fill_it/config/boot_logs.txt'
-    config.category_name_key = 'shoe'
+    config.scene_list_filepath = '/home/wei/Coding/fill_it/config/mugs_flat.txt'
+    config.category_name_key = 'mug'
     database = SpartanSingleObjMaskDatabase(config)
 
     # Construct the patch db
