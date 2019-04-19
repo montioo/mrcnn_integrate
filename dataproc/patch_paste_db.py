@@ -127,3 +127,45 @@ class PatchPasteDatabase(AbstractMaskDatabase):
         merged_mask = new_background_mask + new_foreground_mask
 
         return merged_image, merged_mask
+
+
+# The debugger code
+def test_patch_paste_db():
+    import os
+    import cv2
+    import utils.imgproc as imgproc
+    # Constuct the spartan db
+    from dataproc.spartan_singleobj_database import SpartanSingleObjMaskDatabase, SpartanSingleObjMaskDatabaseConfig
+    config = SpartanSingleObjMaskDatabaseConfig()
+    config.pdc_data_root = '/home/wei/data/pdc'
+    config.scene_list_filepath = '/home/wei/Coding/fill_it/config/boot_logs.txt'
+    config.category_name_key = 'shoe'
+    database = SpartanSingleObjMaskDatabase(config)
+
+    # Construct the patch db
+    patch_db_config = PatchPasteDatabaseConfig()
+    patch_db_config.db_input = database
+    patch_db_config.nominal_size = 10
+    patch_db = PatchPasteDatabase(patch_db_config)
+
+    # Get one image entry and test it
+    image_entry = patch_db[0]
+
+    # Save the result
+    tmp_dir = 'tmp/patch'
+    if not os.path.exists(tmp_dir):
+        os.mkdir(tmp_dir)
+
+    # Save the rgb image
+    cv2.imwrite(os.path.join(tmp_dir, 'rgb.png'), image_entry.rgb_image)
+    for idx in range(len(image_entry.annotation_list)):
+        annotation = image_entry.annotation_list[idx]
+        print(annotation.category_name)
+        mask = annotation.binary_mask
+        mask_name = 'mask-%d.png' % idx
+        mask_path = os.path.join(tmp_dir, mask_name)
+        cv2.imwrite(mask_path, imgproc.get_visible_mask(mask))
+
+
+if __name__ == '__main__':
+    test_patch_paste_db()
