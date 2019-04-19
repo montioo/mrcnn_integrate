@@ -21,4 +21,5 @@ if not os.path.isdir(output_dir):
     os.makedirs(output_dir)
 
 if __name__ == '__main__':
-    os.system(cmd)
+    # os.system(cmd)
+    pass

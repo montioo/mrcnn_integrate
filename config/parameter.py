@@ -2,15 +2,15 @@
 default_obj_category = [
     # The shoe category
     {
-        'id': 0,
+        'id': 10,
         'name': 'shoe',
         'supercategory': 'objects',
     },
 
     # The mug category
-    {
-        'id': 1,
-        'name': 'mug',
-        'supercategory': 'objects',
-    }
+    #{
+    #    'id': 47,
+    #    'name': 'mug',
+    #    'supercategory': 'objects',
+    #}
 ]

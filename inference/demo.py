@@ -1,6 +1,7 @@
 from maskrcnn_benchmark.config import cfg
 from inference.predictor import COCODemo
 import cv2
+import os
 
 
 def main():
@@ -20,8 +21,15 @@ def main():
     # load image and then run prediction
     image = cv2.imread('/home/wei/data/mankey_pdc_data/mug/0_rgb.png', cv2.IMREAD_COLOR)
     predictions = coco_demo.run_on_opencv_image(image)
-    cv2.imshow('window', predictions)
-    cv2.waitKey(0)
+
+    # Save the predicted image
+    tmp_dir = 'tmp/'
+    if not os.path.exists(tmp_dir):
+        os.mkdir(tmp_dir)
+
+    # The name and path
+    image_path = os.path.join(tmp_dir, 'prediction.png')
+    cv2.imwrite(image_path, predictions)
 
 
 if __name__ == '__main__':
