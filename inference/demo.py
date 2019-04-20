@@ -5,13 +5,13 @@ import os
 
 
 def main():
-    config_file = "/home/wei/Coding/mrcnn/maskrcnn-" \
-                  "benchmark/configs/caffe2/e2e_mask_rcnn_R_50_FPN_1x_caffe2.yaml"
+    config_file = '/home/wei/Coding/mrcnn/mrcnn_integrate/config/e2e_mask_rcnn_R_50_FPN_1x_caffe2_mug.yaml'
 
     # update the config options with the config file
     cfg.merge_from_file(config_file)
     # manual override some options
     cfg.merge_from_list(["MODEL.DEVICE", "cpu"])
+    cfg.merge_from_list(["MODEL.WEIGHT", "/home/wei/data/pdc/coco/output/model_0003000.pth"])
 
     coco_demo = COCODemo(
         cfg,
