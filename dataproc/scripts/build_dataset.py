@@ -27,12 +27,12 @@ def build_patch_database(
 def build_coco_dataset():
     # Build the database
     raw_db, _ = build_singleobj_database()
-    patch_db, _ = build_patch_database(raw_db, 10000)
+    patch_db, _ = build_patch_database(raw_db, 1000)
 
     # Build and formatter and run it
     formatter_config = COCODatasetFormatterConfig()
-    formatter_config.db_name = 'mug_10k'
-    formatter_config.base_folder = '/home/wei/data/pdc/coco/mugs'
+    formatter_config.db_name = 'mug_test'
+    formatter_config.base_folder = '/home/wei/data/pdc/coco/mug_test'
     formatter = COCODatasetFormatter(formatter_config)
     formatter.process_db_list([patch_db])
 

@@ -3,15 +3,20 @@
 
 import os
 
-PDC_COCO_DATA_DIR = '/home/wei/Coding/mrcnn/mrcnn_integrate/dataproc/tmp'
+PDC_COCO_DATA_DIR = '/home/wei/data/pdc/coco'
 
 
 class DatasetCatalog(object):
     DATA_DIR = ""
     DATASETS = {
-        "boot_db": {
-            "img_dir": PDC_COCO_DATA_DIR + "/images",
-            "ann_file": PDC_COCO_DATA_DIR + "/boot_db.json"
+        "mug_10k": {
+            "img_dir": PDC_COCO_DATA_DIR + "/mug_10k/images",
+            "ann_file": PDC_COCO_DATA_DIR + "/mug_10k/mug_10k.json"
+        },
+
+        "mug_test": {
+            "img_dir": PDC_COCO_DATA_DIR + "/mug_test/images",
+            "ann_file": PDC_COCO_DATA_DIR + "/mug_test/mug_test.json"
         }
     }
 

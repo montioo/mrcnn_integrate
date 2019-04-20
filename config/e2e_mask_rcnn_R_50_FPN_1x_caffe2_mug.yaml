@@ -31,8 +31,8 @@ MODEL:
     SHARE_BOX_FEATURE_EXTRACTOR: False
   MASK_ON: True
 DATASETS:
-  TRAIN: ("boot_db",)
-  TEST: ("boot_db",)
+  TRAIN: ("mug_10k",)
+  TEST: ("mug_test",)
 DATALOADER:
   SIZE_DIVISIBILITY: 32
 SOLVER:
