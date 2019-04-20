@@ -22,13 +22,13 @@ parser.add_argument(
 )
 parser.add_argument(
     "--save_path",
-    default="./pretrained_model/mask_rcnn_R-50-FPN_1x_detectron_no_last_layers.pth",
+    default="/home/wei/Coding/mrcnn/mrcnn_integrate/train_tools/pretrained_models/pretrained_no_last_layer.pth",
     help="path to save the converted model",
     type=str,
 )
 parser.add_argument(
     "--cfg",
-    default="configs/e2e_mask_rcnn_R_50_FPN_1x.yaml",
+    default="/home/wei/Coding/mrcnn/mrcnn_integrate/config/e2e_mask_rcnn_R_50_FPN_1x_caffe2_mug.yaml",
     help="path to config file",
     type=str,
 )
@@ -43,7 +43,9 @@ _d = load_c2_format(cfg, DETECTRON_PATH)
 newdict = _d
 
 newdict['model'] = removekey(_d['model'],
-                             ['cls_score.bias', 'cls_score.weight', 'bbox_pred.bias', 'bbox_pred.weight'])
+                             ['cls_score.bias', 'cls_score.weight',
+                              'bbox_pred.bias', 'bbox_pred.weight',
+                              'mask_fcn_logits.weight', 'mask_fcn_logits.bias'])
 torch.save(newdict, args.save_path)
 print('saved to {}.'.format(args.save_path))
 
