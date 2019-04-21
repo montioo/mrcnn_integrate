@@ -17,6 +17,16 @@ class DatasetCatalog(object):
         "mug_test": {
             "img_dir": PDC_COCO_DATA_DIR + "/mug_test/images",
             "ann_file": PDC_COCO_DATA_DIR + "/mug_test/mug_test.json"
+        },
+
+        "shoe_10k": {
+            "img_dir": PDC_COCO_DATA_DIR + "/shoe_10k/images",
+            "ann_file": PDC_COCO_DATA_DIR + "/shoe_10k/shoe_10k.json"
+        },
+
+        "shoe_test": {
+            "img_dir": PDC_COCO_DATA_DIR + "/shoe_test/images",
+            "ann_file": PDC_COCO_DATA_DIR + "/shoe_test/shoe_test.json"
         }
     }
 

@@ -23,7 +23,7 @@ def run_prediction():
     cfg.merge_from_file(config_file)
     # manual override some options
     cfg.merge_from_list(["MODEL.DEVICE", "cpu"])
-    cfg.merge_from_list(["MODEL.WEIGHT", "/home/wei/data/pdc/coco/output/model_0003000.pth"])
+    cfg.merge_from_list(["MODEL.WEIGHT", "/home/wei/data/pdc/coco/output/model_0120000.pth"])
 
     coco_demo = COCODemo(
         cfg,
