@@ -24,7 +24,6 @@ class COCODPredictor(object):
         cfg,
         confidence_threshold=0.7,
         show_mask_heatmaps=False,
-        masks_per_dim=2,
         min_image_size=224,
     ):
         self.cfg = cfg.clone()
@@ -45,8 +44,6 @@ class COCODPredictor(object):
 
         self.cpu_device = torch.device("cpu")
         self.confidence_threshold = confidence_threshold
-        self.show_mask_heatmaps = show_mask_heatmaps
-        self.masks_per_dim = masks_per_dim
 
     def build_transform(self):
         """

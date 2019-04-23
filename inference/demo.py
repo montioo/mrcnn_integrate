@@ -15,11 +15,12 @@ def main():
 
     # update the config options with the config file
     cfg.merge_from_file(config_file)
+    cfg.merge_from_list(["MODEL.DEVICE", "cpu"])
     cfg.merge_from_list(["MODEL.WEIGHT", "/home/wei/data/pdc/coco/output_mug/model_0120000.pth"])
 
     # Construct the predict and visualizer
-    coco_predict = COCODPredictor(cfg, min_image_size=224, confidence_threshold=0.7)
-    coco_vis = COCOVisualizer(cfg, min_image_size=224)
+    coco_predict = COCODPredictor(cfg, min_image_size=800, confidence_threshold=0.7)
+    coco_vis = COCOVisualizer(cfg, min_image_size=800)
 
     # Do it
     predictions_raw = coco_predict.run_on_opencv_image(image)
