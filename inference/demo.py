@@ -1,14 +1,15 @@
 from maskrcnn_benchmark.config import cfg
-from inference.predictor import COCODemo
+from utils.imgproc import get_visible_mask
 from inference.coco_predict import COCODPredictor
 from inference.coco_visualizer import COCOVisualizer
 import cv2
 import os
+import numpy as np
 
 
 def main():
     # load image and then run prediction
-    image = cv2.imread('/home/wei/data/mankey_pdc_data/mug/0_rgb.png', cv2.IMREAD_COLOR)
+    image = cv2.imread('/home/wei/Coding/mrcnn/mrcnn_integrate/inference/tmp/00000.png', cv2.IMREAD_COLOR)
 
     # The config file
     config_file = '/home/wei/Coding/mrcnn/mrcnn_integrate/config/e2e_mask_rcnn_R_50_FPN_1x_caffe2_mug.yaml'
@@ -34,6 +35,19 @@ def main():
     # The name and path
     image_path = os.path.join(tmp_dir, 'prediction.png')
     cv2.imwrite(image_path, predictions)
+
+    # The mask for the first predcition
+    mask = predictions_raw.get_field('mask').numpy()
+    labels = predictions_raw.get_field("labels").numpy()
+    boxes = predictions_raw.bbox.numpy()
+    num_obj = mask.shape[0]
+    for i in range(num_obj):
+        assert labels[i] == 1
+        topleft_x, topleft_y = boxes[i, 0], boxes[i, 1]
+        bottomright_x, bottomright_y = boxes[i, 2], boxes[i, 3]
+        mask_i = mask[i, 0, :, :].astype(np.float)
+        mask_path = os.path.join(tmp_dir, 'mask-%d.png' % i)
+        cv2.imwrite(mask_path, get_visible_mask(mask_i))
 
 
 if __name__ == '__main__':
