@@ -16,7 +16,15 @@ class COCODPredictor(object):
     # COCO categories for pretty print
     CATEGORIES = [
         "__background",
-        "person"
+        "person",
+        "bicycle",
+        "car",
+        "motorcycle",
+        "airplane",
+        "bus",
+        "train",
+        "truck",
+        "boat",
     ]
 
     def __init__(
