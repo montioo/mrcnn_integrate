@@ -9,7 +9,7 @@ import os
 def build_singleobj_database() -> (SpartanSingleObjMaskDatabase, SpartanSingleObjMaskDatabaseConfig):
     config = SpartanSingleObjMaskDatabaseConfig()
     config.pdc_data_root = '/home/wei/data/pdc'
-    config.scene_list_filepath = '/home/wei/Coding/mankey/config/mugs_up_with_flat_logs.txt'
+    config.scene_list_filepath = '/home/wei/Coding/mankey/config/shoe_boot_logs.txt'
     config.category_name_key = 'mug'
     database = SpartanSingleObjMaskDatabase(config)
     return database, config
@@ -17,13 +17,13 @@ def build_singleobj_database() -> (SpartanSingleObjMaskDatabase, SpartanSingleOb
 
 def run_prediction():
     # Load the model
-    config_file = '/home/wei/Coding/mrcnn/mrcnn_integrate/config/e2e_mask_rcnn_R_50_FPN_1x_caffe2_mug.yaml'
+    config_file = '/home/wei/Coding/mrcnn/mrcnn_integrate/config/e2e_mask_rcnn_R_50_FPN_1x_caffe2_shoe.yaml'
 
     # update the config options with the config file
     cfg.merge_from_file(config_file)
     # manual override some options
     cfg.merge_from_list(["MODEL.DEVICE", "cpu"])
-    cfg.merge_from_list(["MODEL.WEIGHT", "/home/wei/data/pdc/coco/output/model_0120000.pth"])
+    cfg.merge_from_list(["MODEL.WEIGHT", "/home/wei/data/pdc/coco/output_shoe/model_0142500.pth"])
 
     coco_demo = COCODemo(
         cfg,
