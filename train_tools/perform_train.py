@@ -1,25 +1,60 @@
 import os
+import argparse
+
+# The global parameter
+parser = argparse.ArgumentParser()
+parser.add_argument('--maskrcnn_benchmark_root', type=str,
+                    default='/home/wei/Coding/mrcnn/maskrcnn-benchmark',
+                    help='Path to maskrcnn_benchmark, the package should be INSTALLED')
+parser.add_argument('--config_path', type=str,
+                    default='/home/wei/Coding/mrcnn/mrcnn_integrate/config/e2e_mask_rcnn_R_50_FPN_1x_caffe2_shoe.yaml',
+                    help='The absolute path to config file')
+
+# Parse the argument and get result
+args = parser.parse_args()
+maskrcnn_benchmark_dir = args.maskrcnn_benchmark_root
+config_path = args.config_path
 
 
-MASKRCNN_BENCHMARK_DIR = '/home/wei/Coding/mrcnn/maskrcnn-benchmark'
-train_executable = os.path.join(MASKRCNN_BENCHMARK_DIR, "tools", "train_net.py")
-cfg_file = '/home/wei/Coding/mrcnn/mrcnn_integrate/config/e2e_mask_rcnn_R_50_FPN_1x_boot.yaml'
-output_dir = '/home/wei/Coding/mrcnn/mrcnn_integrate/dataproc/tmp/output'
-paths_catalog = '/home/wei/Coding/mrcnn/mrcnn_integrate/train_tools/paths_catalog_pdc.py'
+def main():
+    # The python script as exe
+    train_executable = os.path.join(maskrcnn_benchmark_dir, "tools", "train_net.py")
 
-args = ""
+    # Check the existence
+    assert os.path.exists(train_executable)
 
-args += "OUTPUT_DIR \"%s\" " % (output_dir)
-args += "PATHS_CATALOG \"%s\" " % (paths_catalog)
+    # The project root for this repo
+    proj_root = os.path.join(os.path.dirname(os.path.realpath(__file__)), os.pardir)
+    proj_root = os.path.abspath(proj_root)
 
-cmd = "python %s --config-file %s %s" % (train_executable, cfg_file, args)
-cmd = cmd + ' SOLVER.IMS_PER_BATCH 2 SOLVER.BASE_LR 0.0025 SOLVER.MAX_ITER 720000 SOLVER.STEPS "(480000, 640000)" TEST.IMS_PER_BATCH 1'
-print(cmd)
+    # The config file name
+    paths_catalog_path = os.path.join(proj_root, 'train_tools/paths_catalog_pdc.py')
+    assert os.path.exists(paths_catalog_path)
 
-# copy file to output directory
-if not os.path.isdir(output_dir):
-    os.makedirs(output_dir)
+    # The output dir
+    output_dir = os.path.join(proj_root, 'train_tools/tmp')
+    if not os.path.exists(output_dir):
+        os.mkdir(output_dir)
+    assert os.path.exists(output_dir)
+
+    # Construct output directory and path catalog
+    args = ""
+    args += "OUTPUT_DIR \"%s\" " % output_dir
+    args += "PATHS_CATALOG \"%s\" " % (paths_catalog_path)
+
+    # The parameter for training
+    args += 'SOLVER.IMS_PER_BATCH 8 SOLVER.BASE_LR 0.0005 ' \
+            'SOLVER.MAX_ITER 720000 SOLVER.STEPS "(480000, 640000)" TEST.IMS_PER_BATCH 1 ' \
+            'SOLVER.CHECKPOINT_PERIOD 2500'
+    cmd = "python %s --config-file %s %s" % (train_executable, config_path, args)
+
+    # The command
+    print('The command is ')
+    print(cmd)
+
+    # Run it
+    os.system(cmd)
+
 
 if __name__ == '__main__':
-    # os.system(cmd)
-    pass
+    main()
