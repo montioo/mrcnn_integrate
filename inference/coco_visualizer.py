@@ -119,6 +119,7 @@ class COCOVisualizer(object):
         """
         Arguments:
             image (np.ndarray): an image as returned by OpenCV
+            top_predictions: the prediction returned by COCOPredictor
 
         Returns:
             prediction (BoxList): the detected objects. Additional information
