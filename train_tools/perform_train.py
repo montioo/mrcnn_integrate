@@ -40,7 +40,7 @@ def main():
     # Construct output directory and path catalog
     args = ""
     args += "OUTPUT_DIR \"%s\" " % output_dir
-    args += "PATHS_CATALOG \"%s\" " % (paths_catalog_path)
+    args += "PATHS_CATALOG \"%s\" " % paths_catalog_path
 
     # The parameter for training
     args += 'SOLVER.IMS_PER_BATCH 8 SOLVER.BASE_LR 0.0005 ' \
