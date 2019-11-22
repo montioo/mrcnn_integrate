@@ -2,6 +2,7 @@ from dataproc.spartan_singleobj_database import SpartanSingleObjMaskDatabaseConf
 from dataproc.abstract_db import AbstractMaskDatabase
 from dataproc.patch_paste_db import PatchPasteDatabase, PatchPasteDatabaseConfig
 from dataproc.coco_formatter import COCODatasetFormatter, COCODatasetFormatterConfig
+from typing import List
 
 
 def build_singleobj_database() -> (SpartanSingleObjMaskDatabase, SpartanSingleObjMaskDatabaseConfig):
@@ -13,11 +14,20 @@ def build_singleobj_database() -> (SpartanSingleObjMaskDatabase, SpartanSingleOb
     return database, config
 
 
+def make_singleobj_database(scene_list_path: str, category_name: str) -> (SpartanSingleObjMaskDatabase, SpartanSingleObjMaskDatabaseConfig):
+    config = SpartanSingleObjMaskDatabaseConfig()
+    config.pdc_data_root = '/home/wei/data/pdc'
+    config.scene_list_filepath = scene_list_path
+    config.category_name_key = category_name
+    database = SpartanSingleObjMaskDatabase(config)
+    return database, config
+
+
 def build_patch_database(
-        database_in: AbstractMaskDatabase,
+        database_in: List[AbstractMaskDatabase],
         nominal_size: int) -> (PatchPasteDatabase, PatchPasteDatabaseConfig):
     patch_db_config = PatchPasteDatabaseConfig()
-    patch_db_config.db_input = database_in
+    patch_db_config.db_input_list = database_in
     patch_db_config.nominal_size = nominal_size
     patch_db_config.max_instance = 5
     patch_db = PatchPasteDatabase(patch_db_config)
@@ -26,13 +36,14 @@ def build_patch_database(
 
 def build_coco_dataset():
     # Build the database
-    raw_db, _ = build_singleobj_database()
-    patch_db, _ = build_patch_database(raw_db, 30000)
+    raw_db_peg, _ = make_singleobj_database('/home/wei/Coding/mrcnn_integrate/dataset_config/siemens_peg.txt', 'ped')
+    raw_db_hole, _ = make_singleobj_database('/home/wei/Coding/mrcnn_integrate/dataset_config/siemens_hole.txt', 'hole')
+    patch_db, _ = build_patch_database([raw_db_peg, raw_db_hole], 30000)
 
     # Build and formatter and run it
     formatter_config = COCODatasetFormatterConfig()
-    formatter_config.db_name = 'mug_db'
-    formatter_config.base_folder = '/home/wei/data/coco/mug_db'
+    formatter_config.db_name = 'peghole_db'
+    formatter_config.base_folder = '/home/wei/data/coco/peghole_db'
     formatter = COCODatasetFormatter(formatter_config)
     formatter.process_db_list([patch_db])
 

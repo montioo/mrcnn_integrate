@@ -1,6 +1,7 @@
 import attr
 import random
 import numpy as np
+from typing import List
 from dataproc.abstract_db import AbstractMaskDatabase, ImageWithAnnotation, AnnotationEntry
 from utils.imgproc import mask2bbox
 
@@ -14,6 +15,7 @@ class PatchPasteDatabaseConfig:
     # The input database
     # Must be specified
     db_input: AbstractMaskDatabase = None
+    db_input_list: List[AbstractMaskDatabase] = list()
 
     # The generation parameter
     min_instance: int = 1
@@ -26,7 +28,8 @@ class PatchPasteDatabase(AbstractMaskDatabase):
         # Maintain the config and check validity
         self._config = config
         assert self._config.nominal_size > 0
-        assert self._config.db_input is not None
+        # assert self._config.db_input is not None
+        assert len(self._config.db_input_list) > 0
 
     def __len__(self):
         return self._config.nominal_size
@@ -83,7 +86,21 @@ class PatchPasteDatabase(AbstractMaskDatabase):
         for multiple database (only need to modified this function)
         :return:
         """
-        return self._config.db_input.get_random_entry()
+        if len(self._config.db_input_list) == 1:
+            return self._config.db_input_list[0].get_random_entry()
+        else:
+            return self._select_random_db_entry()
+
+    def _select_random_db_entry(self) -> ImageWithAnnotation:
+        total_size = 0
+        for db in self._config.db_input_list:
+            total_size += len(db)
+        idx = random.randint(0, total_size - 1)
+        for db in self._config.db_input_list:
+            if idx >= len(db):
+                idx = idx - len(db)
+            else:
+                return db.get_random_entry()
 
     def _get_random_image_and_annotation(self) -> (np.ndarray, AnnotationEntry):
         image_entry = self._get_random_input_entry()
@@ -144,7 +161,7 @@ def test_patch_paste_db():
 
     # Construct the patch db
     patch_db_config = PatchPasteDatabaseConfig()
-    patch_db_config.db_input = database
+    patch_db_config.db_input_list = [database]
     patch_db_config.nominal_size = 10
     patch_db = PatchPasteDatabase(patch_db_config)
 
