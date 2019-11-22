@@ -29,16 +29,16 @@ def build_patch_database(
     patch_db_config = PatchPasteDatabaseConfig()
     patch_db_config.db_input_list = database_in
     patch_db_config.nominal_size = nominal_size
-    patch_db_config.max_instance = 5
+    patch_db_config.max_instance = 2
     patch_db = PatchPasteDatabase(patch_db_config)
     return patch_db, patch_db_config
 
 
 def build_coco_dataset():
     # Build the database
-    raw_db_peg, _ = make_singleobj_database('/home/wei/Coding/mrcnn_integrate/dataset_config/siemens_peg.txt', 'ped')
+    raw_db_peg, _ = make_singleobj_database('/home/wei/Coding/mrcnn_integrate/dataset_config/siemens_peg.txt', 'peg')
     raw_db_hole, _ = make_singleobj_database('/home/wei/Coding/mrcnn_integrate/dataset_config/siemens_hole.txt', 'hole')
-    patch_db, _ = build_patch_database([raw_db_peg, raw_db_hole], 30000)
+    patch_db, _ = build_patch_database([raw_db_peg, raw_db_hole], 20000)
 
     # Build and formatter and run it
     formatter_config = COCODatasetFormatterConfig()
