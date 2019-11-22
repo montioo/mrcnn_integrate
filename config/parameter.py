@@ -8,9 +8,9 @@ default_obj_category = [
     },
 
     # The mug category
-    #{
-    #    'id': 47,
-    #    'name': 'mug',
-    #    'supercategory': 'objects',
-    #}
+    {
+        'id': 47,
+        'name': 'mug',
+        'supercategory': 'objects',
+    }
 ]

@@ -7,8 +7,8 @@ from dataproc.coco_formatter import COCODatasetFormatter, COCODatasetFormatterCo
 def build_singleobj_database() -> (SpartanSingleObjMaskDatabase, SpartanSingleObjMaskDatabaseConfig):
     config = SpartanSingleObjMaskDatabaseConfig()
     config.pdc_data_root = '/home/wei/data/pdc'
-    config.scene_list_filepath = '/home/wei/Coding/mankey/config/shoe_boot_logs.txt'
-    config.category_name_key = 'shoe'
+    config.scene_list_filepath = '/home/wei/Coding/archive/mankey/config/mugs_up_with_flat_logs.txt'
+    config.category_name_key = 'mug'
     database = SpartanSingleObjMaskDatabase(config)
     return database, config
 
@@ -27,12 +27,12 @@ def build_patch_database(
 def build_coco_dataset():
     # Build the database
     raw_db, _ = build_singleobj_database()
-    patch_db, _ = build_patch_database(raw_db, 1000)
+    patch_db, _ = build_patch_database(raw_db, 30000)
 
     # Build and formatter and run it
     formatter_config = COCODatasetFormatterConfig()
-    formatter_config.db_name = 'shoe_test'
-    formatter_config.base_folder = '/home/wei/data/pdc/coco/shoe_test'
+    formatter_config.db_name = 'mug_db'
+    formatter_config.base_folder = '/home/wei/data/coco/mug_db'
     formatter = COCODatasetFormatter(formatter_config)
     formatter.process_db_list([patch_db])
 
