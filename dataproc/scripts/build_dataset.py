@@ -39,7 +39,7 @@ def build_coco_dataset():
     raw_db_hole, _ = make_singleobj_database('/home/wei/Coding/mrcnn_integrate/dataset_config/printed_hole.txt', 'hole')
     raw_db_peg, _ = make_singleobj_database('/home/wei/Coding/mrcnn_integrate/dataset_config/printed_peg.txt', 'peg')
     raw_db_siemens_peg, _ = make_singleobj_database('/home/wei/Coding/mrcnn_integrate/dataset_config/siemens_peg.txt', 'peg')
-    patch_db, _ = build_patch_database([raw_db_peg, raw_db_hole, raw_db_siemens_peg], 40000)
+    patch_db, _ = build_patch_database([raw_db_peg, raw_db_hole, raw_db_siemens_peg], 50000)
 
     # Build and formatter and run it
     formatter_config = COCODatasetFormatterConfig()
