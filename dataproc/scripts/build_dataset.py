@@ -29,12 +29,12 @@ def build_patch_database(
     patch_db_config = PatchPasteDatabaseConfig()
     patch_db_config.db_input_list = database_in
     patch_db_config.nominal_size = nominal_size
-    patch_db_config.max_instance = 3
+    patch_db_config.max_instance = 2
     patch_db = PatchPasteDatabase(patch_db_config)
     return patch_db, patch_db_config
 
 
-def build_coco_dataset():
+def build_peghole_coco_dataset():
     # Build the database
     raw_db_hole, _ = make_singleobj_database('/home/wei/Coding/mrcnn_integrate/dataset_config/printed_hole.txt', 'hole')
     raw_db_peg, _ = make_singleobj_database('/home/wei/Coding/mrcnn_integrate/dataset_config/printed_peg.txt', 'peg')
@@ -43,8 +43,21 @@ def build_coco_dataset():
 
     # Build and formatter and run it
     formatter_config = COCODatasetFormatterConfig()
-    formatter_config.db_name = 'peghole_db'
-    formatter_config.base_folder = '/home/wei/data/coco/peghole_db'
+    formatter_config.db_name = 'lego_db'
+    formatter_config.base_folder = '/home/wei/data/coco/lego_db'
+    formatter = COCODatasetFormatter(formatter_config)
+    formatter.process_db_list([patch_db])
+
+
+def build_coco_dataset():
+    # Build the database
+    raw_db, _ = make_singleobj_database('/home/wei/Coding/mrcnn_integrate/dataset_config/wiper.txt', 'wiper')
+    patch_db, _ = build_patch_database([raw_db], 20000)
+
+    # Build and formatter and run it
+    formatter_config = COCODatasetFormatterConfig()
+    formatter_config.db_name = 'wiper_db'
+    formatter_config.base_folder = '/home/wei/data/coco/wiper_db'
     formatter = COCODatasetFormatter(formatter_config)
     formatter.process_db_list([patch_db])
 

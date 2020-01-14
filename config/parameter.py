@@ -26,5 +26,19 @@ default_obj_category = [
         'id': 4,
         'name': 'hole',
         'supercategory': 'objects',
+    },
+
+    # For lego block
+    {
+        'id': 5,
+        'name': 'lego',
+        'supercategory': 'objects'
+    },
+
+    # For wiper
+    {
+        'id': 6,
+        'name': 'wiper',
+        'supercategory': 'objects'
     }
 ]
