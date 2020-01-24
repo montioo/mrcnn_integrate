@@ -1,8 +1,8 @@
 import os
 
 
-scene_list_dir = '/home/wei/data/pdc/logs_wiper'
-scene_list_prefix = 'logs_wiper/'
+scene_list_dir = '/home/wei/data/pdc/logs_usb_closer'
+scene_list_prefix = 'logs_usb_closer/'
 
 
 def run_make_list():

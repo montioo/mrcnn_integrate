@@ -51,13 +51,13 @@ def build_peghole_coco_dataset():
 
 def build_coco_dataset():
     # Build the database
-    raw_db, _ = make_singleobj_database('/home/wei/Coding/mrcnn_integrate/dataset_config/wiper.txt', 'wiper')
+    raw_db, _ = make_singleobj_database('/home/wei/Coding/mrcnn_integrate/dataset_config/usb.txt', 'hole')
     patch_db, _ = build_patch_database([raw_db], 20000)
 
     # Build and formatter and run it
     formatter_config = COCODatasetFormatterConfig()
-    formatter_config.db_name = 'wiper_db'
-    formatter_config.base_folder = '/home/wei/data/coco/wiper_db'
+    formatter_config.db_name = 'usb_db'
+    formatter_config.base_folder = '/home/wei/data/coco/usb_db'
     formatter = COCODatasetFormatter(formatter_config)
     formatter.process_db_list([patch_db])
 
