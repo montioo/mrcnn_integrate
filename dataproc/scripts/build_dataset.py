@@ -8,7 +8,7 @@ from typing import List
 def build_singleobj_database() -> (SpartanSingleObjMaskDatabase, SpartanSingleObjMaskDatabaseConfig):
     config = SpartanSingleObjMaskDatabaseConfig()
     config.pdc_data_root = '/home/wei/data/pdc'
-    config.scene_list_filepath = '/home/wei/Coding/archive/mankey/config/mugs_up_with_flat_logs.txt'
+    config.scene_list_filepath = '/home/wei/Code/mankey_ros/mankey/config/spartan_data/mugs_all.txt'
     config.category_name_key = 'mug'
     database = SpartanSingleObjMaskDatabase(config)
     return database, config
@@ -51,13 +51,13 @@ def build_peghole_coco_dataset():
 
 def build_coco_dataset():
     # Build the database
-    raw_db, _ = make_singleobj_database('/home/wei/Coding/mrcnn_integrate/dataset_config/usb.txt', 'hole')
-    patch_db, _ = build_patch_database([raw_db], 20000)
+    raw_db, _ = make_singleobj_database('/home/wei/Code/mankey_ros/mankey/config/spartan_data/mugs_all.txt', 'mug')
+    patch_db, _ = build_patch_database([raw_db], 400)
 
     # Build and formatter and run it
     formatter_config = COCODatasetFormatterConfig()
-    formatter_config.db_name = 'usb_db'
-    formatter_config.base_folder = '/home/wei/data/coco/usb_db'
+    formatter_config.db_name = 'mug_db'
+    formatter_config.base_folder = '/home/wei/data/coco/mug_db'
     formatter = COCODatasetFormatter(formatter_config)
     formatter.process_db_list([patch_db])
 

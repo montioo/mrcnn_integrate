@@ -211,8 +211,8 @@ def test_spartan_singleobj_database():
     import utils.imgproc as imgproc
     config = SpartanSingleObjMaskDatabaseConfig()
     config.pdc_data_root = '/home/wei/data/pdc'
-    config.scene_list_filepath = '/home/wei/Coding/fill_it/config/boot_logs.txt'
-    config.category_name_key = 'shoe'
+    config.scene_list_filepath = '/home/wei/Code/mrcnn_integrate/dataset_config/mugs_all.txt'
+    config.category_name_key = 'mug'
     database = SpartanSingleObjMaskDatabase(config)
     path_entry_list = database.path_entry_list
     for entry in path_entry_list:
