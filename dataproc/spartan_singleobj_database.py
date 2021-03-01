@@ -108,6 +108,8 @@ class SpartanSingleObjMaskDatabase(AbstractMaskDatabase):
                 scene_root = os.path.join(config.pdc_data_root, line)
                 if SpartanSingleObjMaskDatabase._is_scene_valid(scene_root, config.pose_yaml_name):
                     scene_root_list.append(scene_root)
+                else:
+                    print("invalid")
 
         # OK
         return scene_root_list
@@ -121,6 +123,7 @@ class SpartanSingleObjMaskDatabase(AbstractMaskDatabase):
         # Must contains keypoint annotation
         scene_processed_root = os.path.join(scene_root, 'processed')
         keypoint_yaml_path = os.path.join(scene_processed_root, pose_yaml_name)
+        print(keypoint_yaml_path)
         if not os.path.exists(keypoint_yaml_path):
             return False
 
@@ -210,9 +213,10 @@ def path_entry_sanity_check(entry):
 def test_spartan_singleobj_database():
     import utils.imgproc as imgproc
     config = SpartanSingleObjMaskDatabaseConfig()
-    config.pdc_data_root = '/home/wei/data/pdc'
-    config.scene_list_filepath = '/home/wei/Code/mrcnn_integrate/dataset_config/mugs_all.txt'
-    config.category_name_key = 'mug'
+    config.pdc_data_root = '/pdc'
+    config.scene_list_filepath = "/pdc/logs_proto/stick_samples_2021-01-30_all.txt"
+    config.category_name_key = "stick"
+    config.pose_yaml_name = "stick_2_keypoint_image.yaml"
     database = SpartanSingleObjMaskDatabase(config)
     path_entry_list = database.path_entry_list
     for entry in path_entry_list:

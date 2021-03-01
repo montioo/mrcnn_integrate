@@ -9,15 +9,16 @@ import numpy as np
 
 def main():
     # load image and then run prediction
-    image = cv2.imread('/home/wei/Coding/mrcnn/mrcnn_integrate/inference/tmp/00000.png', cv2.IMREAD_COLOR)
+    image = cv2.imread("/pdc/logs_proto/coco/stick_db_val/images/10000.png", cv2.IMREAD_COLOR)
 
     # The config file
-    config_file = '/home/wei/Coding/mrcnn/mrcnn_integrate/config/e2e_mask_rcnn_R_50_FPN_1x_caffe2_mug.yaml'
+    # used from within docker container, thus the abs filepath
+    config_file = "/mrcnn_integrate/config/e2e_mask_rcnn_R_50_FPN_1x_caffe2_stick.yaml"
 
     # update the config options with the config file
     cfg.merge_from_file(config_file)
     cfg.merge_from_list(["MODEL.DEVICE", "cpu"])
-    cfg.merge_from_list(["MODEL.WEIGHT", "/home/wei/data/pdc/coco/output_mug/model_0120000.pth"])
+    cfg.merge_from_list(["MODEL.WEIGHT", "/mrcnn_integrate/train_tools/tmp/model_0010000.pth"])
 
     # Construct the predict and visualizer
     coco_predict = COCODPredictor(cfg, min_image_size=800, confidence_threshold=0.7)
@@ -25,10 +26,16 @@ def main():
 
     # Do it
     predictions_raw = coco_predict.run_on_opencv_image(image)
-    predictions = coco_vis.visualize_prediction(image, predictions_raw)
+    print(predictions_raw.bbox)
+    print(predictions_raw.mode)
+
+    # Not interested invsiualizations
+    return
+
+    # predictions = coco_vis.visualize_prediction(image, predictions_raw)
 
     # Save the predicted image
-    tmp_dir = 'tmp/'
+    tmp_dir = 'tmp_inference/'
     if not os.path.exists(tmp_dir):
         os.mkdir(tmp_dir)
 

@@ -4,10 +4,10 @@ import argparse
 # The global parameter
 parser = argparse.ArgumentParser()
 parser.add_argument('--maskrcnn_benchmark_root', type=str,
-                    default='/home/wei/Coding/mrcnn/maskrcnn-benchmark',
+                    default='/maskrcnn-benchmark',
                     help='Path to maskrcnn_benchmark, the package should be INSTALLED')
 parser.add_argument('--config_path', type=str,
-                    default='/home/wei/Coding/mrcnn/mrcnn_integrate/config/e2e_mask_rcnn_R_50_FPN_1x_caffe2_shoe.yaml',
+                    default="/mrcnn_integrate/config/e2e_mask_rcnn_R_50_FPN_1x_caffe2_stick.yaml",
                     help='The absolute path to config file')
 
 # Parse the argument and get result
@@ -43,16 +43,17 @@ def main():
     args += "PATHS_CATALOG \"%s\" " % paths_catalog_path
 
     # The parameter for training
-    args += 'SOLVER.IMS_PER_BATCH 8 SOLVER.BASE_LR 0.0005 ' \
+    args += 'SOLVER.IMS_PER_BATCH 1 SOLVER.BASE_LR 0.0025 ' \
             'SOLVER.MAX_ITER 720000 SOLVER.STEPS "(480000, 640000)" TEST.IMS_PER_BATCH 1 ' \
-            'SOLVER.CHECKPOINT_PERIOD 2500'
+            'SOLVER.CHECKPOINT_PERIOD 2500 MODEL.RPN.FPN_POST_NMS_TOP_N_TRAIN 125'
+
     cmd = "python %s --config-file %s %s" % (train_executable, config_path, args)
 
     # The command
     print('The command is ')
     print(cmd)
 
-    # Run it
+    # Runs the command which tells maskrcnn-benchmark how to perform the training
     os.system(cmd)
 
 

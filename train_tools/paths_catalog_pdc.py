@@ -3,30 +3,19 @@
 
 import os
 
-PDC_COCO_DATA_DIR = '/home/wei/data/pdc/coco'
+PDC_COCO_DATA_DIR = '/pdc/logs_proto/coco'
 
 
 class DatasetCatalog(object):
     DATA_DIR = ""
     DATASETS = {
-        "mug_10k": {
-            "img_dir": PDC_COCO_DATA_DIR + "/mug_10k/images",
-            "ann_file": PDC_COCO_DATA_DIR + "/mug_10k/mug_10k.json"
+        "stick_train": {
+            "img_dir": PDC_COCO_DATA_DIR + "/stick_db_train/images",
+            "ann_file": PDC_COCO_DATA_DIR + "/stick_db_train/stick_db_train.json"
         },
-
-        "mug_test": {
-            "img_dir": PDC_COCO_DATA_DIR + "/mug_test/images",
-            "ann_file": PDC_COCO_DATA_DIR + "/mug_test/mug_test.json"
-        },
-
-        "shoe_10k": {
-            "img_dir": PDC_COCO_DATA_DIR + "/shoe_10k/images",
-            "ann_file": PDC_COCO_DATA_DIR + "/shoe_10k/shoe_10k.json"
-        },
-
-        "shoe_test": {
-            "img_dir": PDC_COCO_DATA_DIR + "/shoe_test/images",
-            "ann_file": PDC_COCO_DATA_DIR + "/shoe_test/shoe_test.json"
+        "stick_val": {
+            "img_dir": PDC_COCO_DATA_DIR + "/stick_db_val/images",
+            "ann_file": PDC_COCO_DATA_DIR + "/stick_db_val/stick_db_val.json"
         }
     }
 
